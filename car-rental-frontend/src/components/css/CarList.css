@@ -1,0 +1,73 @@
+/* Apply Google Font */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #FEFAF6;
+}
+
+/* Car Card Styles */
+.car-box {
+  background-color: #D4F6FF; /* black background */
+  border-radius: 10px;
+  color: black; /* white text */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.car-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Car Name */
+.car-name {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+/* Price */
+.car-price {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+/* Color Swatches */
+.color-swatch {
+  width: 25px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  display: inline-block;
+  cursor: default;
+}
+
+/* Category Headings */
+h4 {
+  margin-top: 2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Search input styling */
+input.form-control {
+  border-radius: 8px;
+  padding: 10px 15px;
+}
+
+/* Responsive fix for small devices */
+@media (max-width: 576px) {
+  .car-box {
+    padding: 1rem;
+  }
+}
+
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #ccc;
+}

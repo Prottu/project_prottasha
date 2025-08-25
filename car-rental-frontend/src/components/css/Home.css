@@ -1,0 +1,251 @@
+/* Enhanced Home Page Styles */
+
+.home-container {
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section .lead {
+  font-size: 1.25rem;
+  font-weight: 300;
+  opacity: 0.95;
+}
+
+.hero-section .btn-light {
+  font-weight: 600;
+  padding: 12px 30px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+.hero-section .btn-light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+}
+
+/* Search Section */
+.search-section {
+  padding: 4rem 0;
+}
+
+.search-section .card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.search-section .card-body {
+  padding: 2.5rem;
+}
+
+.search-section h3 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.form-control, .form-label {
+  font-weight: 500;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  padding: 12px 15px;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+}
+
+/* Featured Section */
+.featured-section {
+  padding: 4rem 0;
+}
+
+.featured-section h2 {
+  color: #333;
+  font-weight: 700;
+  margin-bottom: 3rem;
+}
+
+.featured-section .card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.featured-section .card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.featured-section .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.featured-section .card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.featured-section .card-title {
+  color: #333;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.featured-section .text-muted {
+  font-size: 0.875rem;
+}
+
+.featured-section .btn-outline-primary {
+  border-width: 2px;
+  font-weight: 600;
+  border-radius: 25px;
+  padding: 8px 20px;
+  transition: all 0.2s ease;
+}
+
+.featured-section .btn-outline-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* Features Section */
+.features-section {
+  padding: 4rem 0;
+  background: #f8f9fa;
+}
+
+.features-section h2 {
+  color: #333;
+  font-weight: 700;
+  margin-bottom: 3rem;
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.features-section .text-center:hover .feature-icon {
+  transform: scale(1.1);
+}
+
+.features-section h4 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.features-section .text-muted {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Button Enhancements */
+.btn-primary {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 12px 24px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.btn-lg {
+  padding: 15px 35px;
+  font-size: 1.1rem;
+  border-radius: 50px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-section .lead {
+    font-size: 1.1rem;
+  }
+  
+  .search-section .card-body {
+    padding: 1.5rem;
+  }
+  
+  .featured-section,
+  .features-section {
+    padding: 3rem 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-section .btn-light {
+    padding: 10px 25px;
+    font-size: 0.9rem;
+  }
+  
+  .search-section .card-body {
+    padding: 1rem;
+  }
+}
+
+/* Animation for loading states */
+.spinner-border {
+  color: #007bff;
+}
+
+/* Utility classes */
+.shadow-sm {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.shadow {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
