@@ -1,101 +1,125 @@
-import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import DatePicker from 'react-datepicker'
-import { apiService } from '../services/apiService'
-import { useAuth } from '../contexts/AuthContext'
-import 'react-datepicker/dist/react-datepicker.css'
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import { apiService } from '../services/apiService';
+import { useAuth } from '../contexts/AuthContext';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const VehicleDetails = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { user, getAuthToken } = useAuth()
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { user, getAuthToken } = useAuth();
   
-  const [vehicle, setVehicle] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [vehicle, setVehicle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [bookingData, setBookingData] = useState({
     startDate: null,
     endDate: null
-  })
-  const [bookingLoading, setBookingLoading] = useState(false)
-  const [totalPrice, setTotalPrice] = useState(0)
+  });
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    fetchVehicle()
-  }, [id])
+    fetchVehicle();
+  }, [id]);
 
   useEffect(() => {
-    calculateTotalPrice()
-  }, [bookingData.startDate, bookingData.endDate, vehicle])
+    calculateTotalPrice();
+  }, [bookingData.startDate, bookingData.endDate, vehicle]);
 
   const fetchVehicle = async () => {
     try {
-      setLoading(true)
-      setError('')
-      const response = await apiService.getVehicle(id)
-      setVehicle(response.vehicle)
+      setLoading(true);
+      setError('');
+      const response = await apiService.getVehicle(id);
+      setVehicle(response.vehicle);
     } catch (error) {
-      setError('Failed to load vehicle details. Please try again.')
-      console.error('Error fetching vehicle:', error)
+      setError('Failed to load vehicle details. Please try again.');
+      console.error('Error fetching vehicle:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const calculateTotalPrice = () => {
     if (bookingData.startDate && bookingData.endDate && vehicle) {
-      const start = new Date(bookingData.startDate)
-      const end = new Date(bookingData.endDate)
-      const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24))
+      const start = new Date(bookingData.startDate);
+      const end = new Date(bookingData.endDate);
+      console.log("Start Date:", start);
+      console.log("End Date:", end);
       
+      if (start >= end) {
+        console.log("Invalid Date Range");
+        setTotalPrice(0);
+        return;
+      }
+      
+      const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+      console.log("Days:", days); // Log the days value to verify it's calculating correctly
+
       if (days > 0) {
-        setTotalPrice(days * vehicle.price_per_day)
+        setTotalPrice(days * vehicle.price_per_day);
       } else {
-        setTotalPrice(0)
+        setTotalPrice(0);
       }
     } else {
-      setTotalPrice(0)
+      setTotalPrice(0);
     }
-  }
+  };
 
   const handleBooking = async () => {
     if (!user) {
-      navigate('/login')
-      return
+      navigate('/login');
+      return;
     }
 
     if (!bookingData.startDate || !bookingData.endDate) {
-      alert('Please select both pickup and return dates.')
-      return
+      alert('Please select both pickup and return dates.');
+      return;
+    }
+
+    if (new Date(bookingData.startDate) >= new Date(bookingData.endDate)) {
+      alert('Return date must be later than pickup date.');
+      return;
     }
 
     try {
-      setBookingLoading(true)
+      setBookingLoading(true);
       const bookingPayload = {
         vehicle_id: vehicle.id,
         start_date: bookingData.startDate.toISOString().split('T')[0],
-        end_date: bookingData.endDate.toISOString().split('T')[0]
-      }
+        end_date: bookingData.endDate.toISOString().split('T')[0],
+        total_amount: totalPrice, // Include total amount here
+        customer_name: user.name,
+        customer_email: user.email
+      };
 
-      const response = await apiService.createBooking(bookingPayload, getAuthToken())
-      
-      alert('Booking successful!')
-      navigate('/my-bookings')
+      const response = await apiService.createBooking(bookingPayload, getAuthToken());
+
+      alert('Booking successful!');
+      navigate('/my-bookings', {
+        state: { 
+          ...bookingPayload,
+          totalPrice: totalPrice // Pass totalPrice here
+        }
+      });
     } catch (error) {
-      alert(error.message || 'Failed to create booking. Please try again.')
+      alert(error.message || 'Failed to create booking. Please try again.');
     } finally {
-      setBookingLoading(false)
+      setBookingLoading(false);
     }
-  }
+  };
 
   const getDays = () => {
     if (bookingData.startDate && bookingData.endDate) {
-      const start = new Date(bookingData.startDate)
-      const end = new Date(bookingData.endDate)
-      return Math.ceil((end - start) / (1000 * 60 * 60 * 24))
+      const start = new Date(bookingData.startDate);
+      const end = new Date(bookingData.endDate);
+      return Math.ceil((end - start) / (1000 * 60 * 60 * 24));
     }
-    return 0
-  }
+    return 0;
+  };
 
   if (loading) {
     return (
@@ -107,7 +131,7 @@ const VehicleDetails = () => {
           <p className="mt-2">Loading vehicle details...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -117,7 +141,7 @@ const VehicleDetails = () => {
           {error}
         </div>
       </div>
-    )
+    );
   }
 
   if (!vehicle) {
@@ -127,7 +151,7 @@ const VehicleDetails = () => {
           Vehicle not found.
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -146,7 +170,7 @@ const VehicleDetails = () => {
                       alt={`${vehicle.make} ${vehicle.model}`}
                       style={{ width: '100%', height: '300px', objectFit: 'cover' }}
                       onError={(e) => {
-                        e.target.style.display = 'none'
+                        e.target.style.display = 'none';
                       }}
                     />
                   )}
@@ -281,7 +305,7 @@ const VehicleDetails = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default VehicleDetails
+export default VehicleDetails;

@@ -1,35 +1,46 @@
-import { API_BASE_URL } from '../supabaseClient'
+import { API_BASE_URL } from '../supabaseClient';
 
 class ApiService {
   constructor() {
-    this.baseURL = API_BASE_URL
+    this.baseURL = API_BASE_URL; // e.g. http://localhost:5000
   }
 
   async makeRequest(endpoint, options = {}) {
-    const url = `${this.baseURL}${endpoint}`
-    
-    try {
-      const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
-        ...options,
-      })
+    const url = `${this.baseURL}${endpoint}`;
+    const resp = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+      ...options,
+    });
 
-      const data = await response.json()
+    let data;
+    try { data = await resp.json(); } catch { data = null; }
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Request failed')
-      }
-
-      return data
-    } catch (error) {
-      console.error('API Request failed:', error)
-      throw error
+    if (!resp.ok) {
+      const msg = (data && (data.error || data.message)) || `Request failed: ${resp.status}`;
+      throw new Error(msg);
     }
+    return data;
   }
 
+  // ---- PAYMENTS ----
+  async createPaymentIntent(bookingId, amount, authToken) {
+    return this.makeRequest('/api/payment_intent', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({ booking_id: bookingId, amount }),
+    });
+  }
+
+  async confirmPayment(bookingId, paymentIntentId, authToken) {
+    return this.makeRequest(`/api/bookings/${bookingId}/confirm_payment`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({ payment_intent_id: paymentIntentId }),
+    });
+  }
   // Vehicle endpoints
   async getVehicles(filters = {}) {
     const queryParams = new URLSearchParams()
@@ -50,71 +61,38 @@ class ApiService {
     return this.makeRequest(`/api/vehicles/${vehicleId}`)
   }
 
-  // Booking endpoints
+  // ---- BOOKINGS ----
   async createBooking(bookingData, authToken) {
     return this.makeRequest('/api/bookings', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
+      headers: { Authorization: `Bearer ${authToken}` },
       body: JSON.stringify(bookingData),
-    })
+    });
   }
 
   async getMyBookings(authToken) {
     return this.makeRequest('/api/my-bookings', {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    })
+      method: 'GET',
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
   }
 
   async cancelBooking(bookingId, authToken) {
+    // Backend must have: PATCH /api/bookings/:id/cancel
     return this.makeRequest(`/api/bookings/${bookingId}/cancel`, {
       method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    })
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
   }
 
-  // Admin endpoints
-  async addVehicle(vehicleData, authToken) {
-    return this.makeRequest('/api/admin/vehicles', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(vehicleData),
-    })
-  }
-
-  async updateVehicle(vehicleId, vehicleData, authToken) {
-    return this.makeRequest(`/api/admin/vehicles/${vehicleId}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(vehicleData),
-    })
-  }
-
-  async deleteVehicle(vehicleId, authToken) {
-    return this.makeRequest(`/api/admin/vehicles/${vehicleId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    })
-  }
-
-  async getAllBookings(authToken) {
-    return this.makeRequest('/api/admin/bookings', {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    })
-  }
+  // ---- ADMIN ----
+//   async getAllBookings(authToken) {
+//     return this.makeRequest('/api/admin/bookings', {
+//       method: 'GET',
+//       headers: { Authorization: `Bearer ${authToken}` },
+//     });
+//   }
 }
 
-export const apiService = new ApiService()
+export const apiService = new ApiService();
+

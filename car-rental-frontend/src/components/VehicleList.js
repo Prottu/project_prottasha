@@ -247,5 +247,4 @@ const CarList = () => {
     </div>
   )
 }
-
 export default CarList

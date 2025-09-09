@@ -47,7 +47,7 @@ cd car-rental-frontend
 npm install
 cp .env.example .env
 # Edit .env with your Supabase credentials
-npm start
+Design a Full adder using a 4-bit Parallel adder
 ```
 
 ### 5. Access Your App

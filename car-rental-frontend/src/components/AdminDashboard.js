@@ -48,18 +48,27 @@ const AdminDashboard = () => {
   }
 
   const fetchBookings = async () => {
-    try {
-      setLoading(true)
-      setError('')
-      const response = await apiService.getAllBookings(getAuthToken())
-      setBookings(response.bookings)
-    } catch (error) {
-      setError('Failed to load bookings.')
-      console.error('Error fetching bookings:', error)
-    } finally {
-      setLoading(false)
-    }
+  try {
+    setLoading(true)
+    setError('')
+
+    // ✅ get a real token string
+    const token = await getAuthToken()
+
+    // ✅ pass the actual token
+    const response = await apiService.getAllBookings(token)
+
+    // ✅ handle both shapes: array or { bookings: [...] }
+    const list = Array.isArray(response) ? response : (response?.bookings || [])
+    setBookings(list)
+  } catch (error) {
+    setError('Failed to load bookings.')
+    console.error('Error fetching bookings:', error)
+  } finally {
+    setLoading(false)
   }
+}
+
 
   const handleVehicleSubmit = async (e) => {
     e.preventDefault()

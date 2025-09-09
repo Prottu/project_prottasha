@@ -60,8 +60,22 @@ export const AuthProvider = ({ children }) => {
     return { error }
   }
 
-  const isAdmin = () => {
-    return user?.user_metadata?.role === 'admin'
+  const isAdmin = async () => {
+    if (!user) return false
+    const {data: userRoleData, error: userRoleError} = await supabase
+        .from('user_roles')
+        .select('role_id')
+        .eq('user_id', user.id)
+        .single();
+    if (userRoleError || !userRoleData) return false;
+
+    const {data: roleData, error: roleError} = await supabase
+        .from('roles')
+        .select('name')
+        .eq('id', userRoleData.role_id)
+        .single();
+    if (roleError || !roleData) return false;
+    return roleData.name === 'admin';
   }
 
   const getAuthToken = () => {

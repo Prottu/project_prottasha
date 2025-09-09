@@ -12,6 +12,7 @@ import VehicleList from './components/VehicleList'
 import VehicleDetails from './components/VehicleDetails'
 import MyBookings from './components/MyBookings'
 import AdminDashboard from './components/AdminDashboard'
+import PaymentPage from './components/PaymentPage'  // Import PaymentPage
 
 // CSS
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -50,6 +51,10 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+            
+            {/* Payment Routes */}
+            <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/payment/:bookingId" element={<PaymentPage />} />
             
             {/* Legacy routes for compatibility */}
             <Route path="/cars" element={<VehicleList />} />
