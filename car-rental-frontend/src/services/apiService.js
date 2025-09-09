@@ -41,24 +41,32 @@ class ApiService {
       body: JSON.stringify({ payment_intent_id: paymentIntentId }),
     });
   }
+
   // Vehicle endpoints
   async getVehicles(filters = {}) {
-    const queryParams = new URLSearchParams()
-    
+    const queryParams = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
       if (value) {
-        queryParams.append(key, value)
+        queryParams.append(key, value);
       }
-    })
+    });
 
-    const queryString = queryParams.toString()
-    const endpoint = `/api/vehicles${queryString ? `?${queryString}` : ''}`
-    
-    return this.makeRequest(endpoint)
+    const queryString = queryParams.toString();
+    const endpoint = `/api/vehicles${queryString ? `?${queryString}` : ''}`;
+
+    return this.makeRequest(endpoint);
   }
 
   async getVehicle(vehicleId) {
-    return this.makeRequest(`/api/vehicles/${vehicleId}`)
+    return this.makeRequest(`/api/vehicles/${vehicleId}`);
+  }
+
+  async updateVehicle(vehicleId, vehicleData, authToken) {
+    return this.makeRequest(`/api/vehicles/${vehicleId}`, {
+      method: 'PUT',  // Or 'PATCH' depending on your backend
+      headers: { Authorization: `Bearer ${authToken}` },
+      body: JSON.stringify(vehicleData),
+    });
   }
 
   // ---- BOOKINGS ----
@@ -78,7 +86,6 @@ class ApiService {
   }
 
   async cancelBooking(bookingId, authToken) {
-    // Backend must have: PATCH /api/bookings/:id/cancel
     return this.makeRequest(`/api/bookings/${bookingId}/cancel`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${authToken}` },
@@ -86,13 +93,12 @@ class ApiService {
   }
 
   // ---- ADMIN ----
-//   async getAllBookings(authToken) {
-//     return this.makeRequest('/api/admin/bookings', {
-//       method: 'GET',
-//       headers: { Authorization: `Bearer ${authToken}` },
-//     });
-//   }
+  // async getAllBookings(authToken) {
+  //   return this.makeRequest('/api/admin/bookings', {
+  //     method: 'GET',
+  //     headers: { Authorization: `Bearer ${authToken}` },
+  //   });
+  // }
 }
 
 export const apiService = new ApiService();
-
